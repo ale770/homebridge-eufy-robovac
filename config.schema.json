@@ -23,7 +23,7 @@
         "required": true
       },
       "ip": {
-        "title": "ip",
+        "title": "IP",
         "type": "string",
         "required": true
       },

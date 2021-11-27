@@ -1,6 +1,9 @@
 # homebridge-eufy-robovac
 Homebridge plugin for Eufy RoboVac
 
+Forked from [homebridge-eufy-robovac](https://github.com/apexad/homebridge-eufy-robovac)
+Was having issues so I removed all of the features except on/off, and added IP parameter.
+
 ### Features
 
 * Switch on / off. When off, it will returning to charging dock automatically.
@@ -24,8 +27,7 @@ To configure manually, add to the `accessories` section of homebridge's `config.
       "name": "Vacuum Cleaner",
       "deviceId": "<deviceId/devId>",
       "localKey": "<localKey>",
-      "hideFindButton": "<true | false, defaults to false>",
-      "hideErrorSensor": "<true | false, defaults to false>",
+      "ip": "<ip>",
       "useSwitchService": "<true | false, defaults to false>",
       "debugLog": "<true | false, defaults to false>"
     }
@@ -33,8 +35,6 @@ To configure manually, add to the `accessories` section of homebridge's `config.
 You can find out more about the `deviceId`/`localKey` [here](https://github.com/joshstrange/eufy-robovac)
 
 Eufy RoboVac will be added to Home app a fan accessory (since HomeKit does not natively support vacuums).  
-If `hideFindButton` is not supplied or set to false, a switch that performs the 'Find' function will also be added.  
-If `hideErrorSensor` is not supplied or set to false, a Motion Sensor that is active when the vacuum has an error will also be added.  
 If `useSwitchService` is true, main Vacuum will be a switch instead of fan.  
 if `debugLog` is enabled (set to true), the underlying library will outut many logs.
 
