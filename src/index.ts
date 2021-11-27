@@ -33,9 +33,9 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
 
   private readonly vacuumService: Service;
   private readonly informationService: Service;
-  private readonly batteryService: Service;
-  private readonly findRobotService: Service | undefined;
-  private readonly errorSensorService: Service | undefined;
+  // private readonly batteryService: Service;
+  // private readonly findRobotService: Service | undefined;
+  // private readonly errorSensorService: Service | undefined;
   private roboVac!: RoboVac;
   private readonly config: { deviceId: any; localKey: any; ip: any; };
   private readonly hideFindButton: boolean;
