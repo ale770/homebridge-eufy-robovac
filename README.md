@@ -2,7 +2,9 @@
 Homebridge plugin for Eufy RoboVac
 
 Forked from [homebridge-eufy-robovac](https://github.com/apexad/homebridge-eufy-robovac)
-Was having issues so I removed all of the features except on/off, and added IP parameter.
+
+- Removed all of the features except on/off
+- Added IP parameter
 
 ### Features
 
