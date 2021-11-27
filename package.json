@@ -1,6 +1,6 @@
 {
-  "name": "homebridge-eufy-robovac",
-  "version": "2.1.2",
+  "name": "@ale770/homebridge-eufy-robovac",
+  "version": "1.0.0",
   "description": "Homebridge support for Eufy RoboVac",
   "main": "dist/index.js",
   "dependencies": {
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshstrange/homebridge-eufy-robovac.git"
+    "url": "git+https://github.com/ale770/homebridge-eufy-robovac.git"
   },
   "keywords": [
     "eufy",
@@ -28,9 +28,6 @@
   ],
   "author": "Josh Strange",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/joshstrange/homebridge-eufy-robovac/issues"
-  },
   "engines": {
     "node": ">=0.12.0",
     "homebridge": ">=0.2.0"
