@@ -5,11 +5,11 @@ Homebridge plugin for Eufy RoboVac
 
 * Switch on / off. When off, it will returning to charging dock automatically.
 
-* Display battery level, and notify on low battery.
+* Display battery level, and notify on low battery. (removed)
 
-* Display battery charging state.
+* Display battery charging state. (removed)
 
-* Find robot
+* Find robot (removed)
 
 ### Configuration
 This easiest way to use this plugin is to use [homebridge-config-ui-x](https://www.npmjs.com/package/homebridge-config-ui-x).  
