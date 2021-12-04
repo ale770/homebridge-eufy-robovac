@@ -1,7 +1,7 @@
 import {
   RoboVac,
   WorkStatus,
-} from 'eufy-robovac';
+} from './eufy-robovac';
 
 import {
   AccessoryConfig,
@@ -24,7 +24,7 @@ export = (api: API) => {
 };
 
 function sleep(ms: number) {
-	return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 class EufyRoboVacAccessory implements AccessoryPlugin {
@@ -33,14 +33,14 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
 
   private readonly vacuumService: Service;
   private readonly informationService: Service;
-  // private readonly batteryService: Service;
-  // private readonly findRobotService: Service | undefined;
-  // private readonly errorSensorService: Service | undefined;
+  private readonly batteryService: Service | undefined;
+  private readonly findRobotService: Service | undefined;
+  private readonly errorSensorService: Service | undefined;
   private roboVac!: RoboVac;
-  private readonly config: { deviceId: any; localKey: any; ip: any; };
+  private readonly config: { deviceId: any; localKey: any; ip: string; port: 6668 };
   private readonly hideFindButton: boolean;
   private readonly hideErrorSensor: boolean;
-  private readonly debugLog: boolean;
+  private readonly disableBatteryLevel: boolean;
   services: Service[];
 
   constructor(log: Logging, config: AccessoryConfig, api: API) {
@@ -48,12 +48,13 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
     this.name = config.name || 'Eufy RoboVac';
     this.hideFindButton = config.hideFindButton;
     this.hideErrorSensor = config.hideErrorSensor;
+    this.disableBatteryLevel = config.disableBatteryLevel;
 
-    this.debugLog = config.debugLog;
     this.config = {
       deviceId: config.deviceId,
       localKey: config.localKey,
       ip: config.ip,
+      port: 6668,
     };
     this.services = [];
 
@@ -68,45 +69,47 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
       .setCharacteristic(hap.Characteristic.Model, 'RoboVac');
     this.services.push(this.informationService);
 
-    // this.batteryService = new hap.Service.BatteryService(this.name + ' Battery');
-    // this.batteryService.getCharacteristic(hap.Characteristic.BatteryLevel)
-    //   .on(CharacteristicEventTypes.GET, this.getBatteryLevel.bind(this));
+    if (!this.disableBatteryLevel) {
+    this.batteryService = new hap.Service.BatteryService(this.name + ' Battery');
+    this.batteryService.getCharacteristic(hap.Characteristic.BatteryLevel)
+      .on(CharacteristicEventTypes.GET, this.getBatteryLevel.bind(this));
 
-    // this.batteryService
-    //   .getCharacteristic(hap.Characteristic.ChargingState)
-    //   .on(CharacteristicEventTypes.GET, this.getChargingState.bind(this));
+    this.batteryService
+      .getCharacteristic(hap.Characteristic.ChargingState)
+      .on(CharacteristicEventTypes.GET, this.getChargingState.bind(this));
 
-    // this.batteryService.getCharacteristic(hap.Characteristic.StatusLowBattery)
-    //   .on(CharacteristicEventTypes.GET, this.getStatusLowBattery.bind(this));
-    // this.services.push(this.batteryService);
+    this.batteryService.getCharacteristic(hap.Characteristic.StatusLowBattery)
+      .on(CharacteristicEventTypes.GET, this.getStatusLowBattery.bind(this));
+    this.services.push(this.batteryService);
+    }
 
-    // if (!this.hideFindButton) {
-    //   this.findRobotService = new hap.Service.Switch(`Find ${this.name}`, 'find');
+    if (!this.hideFindButton) {
+      this.findRobotService = new hap.Service.Switch(`Find ${this.name}`, 'find');
 
-    //   this.findRobotService
-    //     .getCharacteristic(hap.Characteristic.On)
-    //     .on(CharacteristicEventTypes.GET, this.getFindRobot.bind(this))
-    //     .on(CharacteristicEventTypes.SET, this.setFindRobot.bind(this));
+      this.findRobotService
+        .getCharacteristic(hap.Characteristic.On)
+        .on(CharacteristicEventTypes.GET, this.getFindRobot.bind(this))
+        .on(CharacteristicEventTypes.SET, this.setFindRobot.bind(this));
 
-    //   this.services.push(this.findRobotService);
-    // }
+      this.services.push(this.findRobotService);
+    }
 
-    // if (!this.hideErrorSensor) {
-    //   this.errorSensorService = new hap.Service.MotionSensor(`Error ${this.name}`);
+    if (!this.hideErrorSensor) {
+      this.errorSensorService = new hap.Service.MotionSensor(`Error ${this.name}`);
 
-    //   this.errorSensorService
-    //     .getCharacteristic(hap.Characteristic.MotionDetected)
-    //     .on(CharacteristicEventTypes.GET, this.getErrorStatus.bind(this))
+      this.errorSensorService
+        .getCharacteristic(hap.Characteristic.MotionDetected)
+        .on(CharacteristicEventTypes.GET, this.getErrorStatus.bind(this))
 
-    //   this.services.push(this.errorSensorService);
-    // }
+      this.services.push(this.errorSensorService);
+    }
 
     this.setup();
     log.info(`${this.name} finished initializing!`);
   }
 
   async setup() {
-		this.roboVac = new RoboVac(this.config, this.debugLog);
+    this.roboVac = new RoboVac(this.config, this.log);
     return await this.roboVac.getStatuses();
   }
 
@@ -118,16 +121,16 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
       cleanState = await this.roboVac.getPlayPause(true);
       this.log.debug(`getCleanState for ${this.name} returned ${cleanState}`);
       callback(undefined, cleanState);
-    } catch(e) {
+    } catch (e) {
       await this.setup();
-      this.getCleanState(() => {});
+      this.getCleanState(() => { });
     }
   }
 
   async setCleanState(state: CharacteristicValue, callback: CharacteristicSetCallback) {
     this.log.debug(`setCleanState for ${this.name} set to ${state}`);
     await this.roboVac.setPlayPause(state as boolean);
-    if(!state) {
+    if (!state) {
       await sleep(2000);
       await this.roboVac.goHome();
     }
@@ -139,7 +142,7 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
 
     try {
       callback(null, await this.roboVac.getBatteyLevel());
-    } catch(e) {
+    } catch (e) {
       this.log.debug(`getBatteryLevel error; ${e}`);
       callback(null, 0); // push 0 if error, getCleanState will call setup function again
     }
@@ -150,7 +153,7 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
 
     try {
       callback(null, (await this.roboVac.getWorkStatus() === WorkStatus.CHARGING) ? hap.Characteristic.ChargingState.CHARGING : hap.Characteristic.ChargingState.NOT_CHARGEABLE);
-    } catch(e) {
+    } catch (e) {
       this.log.debug(`getChargingState error; ${e}`);
       callback(null, false); // push not charging if error, getCleanState will call setup function again
     }
@@ -159,7 +162,7 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
   async getStatusLowBattery(callback: CharacteristicGetCallback) {
     try {
       callback(null, (await this.roboVac.getBatteyLevel() < 30) ? hap.Characteristic.StatusLowBattery.BATTERY_LEVEL_LOW : hap.Characteristic.StatusLowBattery.BATTERY_LEVEL_NORMAL);
-    } catch(e) {
+    } catch (e) {
       callback(null, false); // push not low battery if error, getCleanState will call setup function again
 
     }
@@ -170,10 +173,10 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
 
     try {
       callback(null, await this.roboVac.getFindRobot());
-    } catch(e) {
+    } catch (e) {
       callback(null, false); // push false for find switch if error, getCleanState will call setup function again
     }
-	}
+  }
 
   async setFindRobot(state: CharacteristicValue, callback: CharacteristicSetCallback) {
     this.log.debug(`setFindRobot for ${this.name} set to ${state}`);
@@ -184,7 +187,7 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
   async getErrorStatus(callback: CharacteristicGetCallback) {
     try {
       callback(null, (await this.roboVac.getErrorCode() === 'no_error') ? false : true);
-    } catch(e) {
+    } catch (e) {
       callback(null, false); // push false for getErrorStatus if error, getCleanState will call setup function again
     }
   }

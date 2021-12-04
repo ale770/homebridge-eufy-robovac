@@ -1,10 +1,10 @@
 {
   "name": "@ale770/homebridge-eufy-robovac",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Homebridge support for Eufy RoboVac",
   "main": "dist/index.js",
   "dependencies": {
-    "eufy-robovac": "^1.4.1"
+    "tuyapi": "^5.3.1"
   },
   "devDependencies": {
     "@types/node": "10.17.19",

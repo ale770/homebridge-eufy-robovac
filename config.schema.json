@@ -27,14 +27,26 @@
         "type": "string",
         "required": true
       },
-      "useSwitchService": {
-        "title": "Use Switch for Vacuum (Default is Fan)",
+      "disableBatteryLevel": {
+        "title": "Disable Battery Level",
         "type": "boolean",
         "required": false,
         "default": false
       },
-      "debugLog": {
-        "title": "Enable Debug Log",
+      "hideFindButton": {
+        "title": "Hide Find Button",
+        "type": "boolean",
+        "required": false,
+        "default": false
+      },
+      "hideErrorSensor": {
+        "title": "Hide Error Sensor",
+        "type": "boolean",
+        "required": false,
+        "default": false
+      },
+      "useSwitchService": {
+        "title": "Use Switch for Vacuum (Default is Fan)",
         "type": "boolean",
         "required": false,
         "default": false

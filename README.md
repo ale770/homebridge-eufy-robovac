@@ -3,18 +3,17 @@ Homebridge plugin for Eufy RoboVac
 
 Forked from [homebridge-eufy-robovac](https://github.com/apexad/homebridge-eufy-robovac)
 
-- Removed all of the features except on/off
 - Added IP parameter
 
 ### Features
 
 * Switch on / off. When off, it will returning to charging dock automatically.
 
-* Display battery level, and notify on low battery. (removed)
+* Display battery level, and notify on low battery.
 
-* Display battery charging state. (removed)
+* Display battery charging state.
 
-* Find robot (removed)
+* Find robot
 
 ### Configuration
 This easiest way to use this plugin is to use [homebridge-config-ui-x](https://www.npmjs.com/package/homebridge-config-ui-x).  
