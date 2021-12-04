@@ -70,17 +70,17 @@ class EufyRoboVacAccessory implements AccessoryPlugin {
     this.services.push(this.informationService);
 
     if (!this.disableBatteryLevel) {
-    this.batteryService = new hap.Service.BatteryService(this.name + ' Battery');
-    this.batteryService.getCharacteristic(hap.Characteristic.BatteryLevel)
-      .on(CharacteristicEventTypes.GET, this.getBatteryLevel.bind(this));
+      this.batteryService = new hap.Service.Battery(this.name + ' Battery');
+      this.batteryService.getCharacteristic(hap.Characteristic.BatteryLevel)
+        .on(CharacteristicEventTypes.GET, this.getBatteryLevel.bind(this));
 
-    this.batteryService
-      .getCharacteristic(hap.Characteristic.ChargingState)
-      .on(CharacteristicEventTypes.GET, this.getChargingState.bind(this));
+      this.batteryService
+        .getCharacteristic(hap.Characteristic.ChargingState)
+        .on(CharacteristicEventTypes.GET, this.getChargingState.bind(this));
 
-    this.batteryService.getCharacteristic(hap.Characteristic.StatusLowBattery)
-      .on(CharacteristicEventTypes.GET, this.getStatusLowBattery.bind(this));
-    this.services.push(this.batteryService);
+      this.batteryService.getCharacteristic(hap.Characteristic.StatusLowBattery)
+        .on(CharacteristicEventTypes.GET, this.getStatusLowBattery.bind(this));
+      this.services.push(this.batteryService);
     }
 
     if (!this.hideFindButton) {
